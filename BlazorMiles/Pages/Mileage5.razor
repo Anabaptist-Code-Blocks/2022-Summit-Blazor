@@ -1,0 +1,58 @@
+﻿@page "/mileage5"
+@using BlazorMiles.Data
+@inject MileageContext context;
+<h3>Mileage</h3>
+<p>Enter Miles: <input @bind-value="NewEntry.Miles"/>  </p>
+<p>Enter Gallons: <input @bind-value="NewEntry.Gallons"/>  </p>
+<p><button @onclick="Calculate">Calculate and Save</button></p>
+<p>Your MPG Is: @MPG</p>
+<p>Miles / Gallons History</p>
+<table>
+    <tr><th>Miles</th>
+        <th>Gallons</th>
+        <th></th>
+    </tr>
+@foreach (var entry in Data)
+{
+    <tr>
+        <td><input @bind-value="@entry.Miles"/></td>
+        <td><input @bind-value="@entry.Gallons"/></td>
+        <td><button @onclick="() => DeleteEntry(entry)">Delete</button></td>
+    </tr>
+}
+</table>
+<p><button @onclick="SaveData">Save</button></p>
+
+@code {
+    private MilesGallon NewEntry { get; set; } = new();
+    private decimal MPG { get; set; }
+    private List<MilesGallon> Data { get; set; } = new();
+
+    private void Calculate()
+    {
+        MPG = NewEntry.Miles / NewEntry.Gallons;
+        context.Add(NewEntry);
+        context.SaveChanges();
+        NewEntry = new MilesGallon();
+        LoadData();
+    }
+    protected override void OnInitialized()
+    {
+        LoadData();
+    }
+    private void LoadData()
+    {
+        Data = context.MilesGallons.ToList();
+    }
+    private void SaveData()
+    {
+        context.SaveChanges();
+    }
+    private void DeleteEntry(MilesGallon entry)
+    {
+        context.Remove(entry);
+        context.SaveChanges();
+        LoadData();
+    }
+
+}

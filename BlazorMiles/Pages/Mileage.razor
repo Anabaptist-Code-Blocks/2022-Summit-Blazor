@@ -1,0 +1,18 @@
+﻿@page "/mileage"
+<h3>Mileage</h3>
+<p>Enter Miles: <input @bind-value="Miles"/></p>
+<p>Enter Gallons <input @bind-value="Gallons"/></p>
+<p>Your MPG Is: @Mpg</p>
+<p><button @onclick="Calculate">Calculate</button></p>
+@code {
+
+    public decimal Miles { get; set; }
+    public decimal Gallons { get; set; }
+    public decimal Mpg { get; set; }
+
+    public void Calculate()
+    {
+        Mpg = Miles / Gallons;        
+    }
+
+}
